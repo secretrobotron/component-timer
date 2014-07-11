@@ -114,15 +114,20 @@
         this._timeLeftString = timeFromSeconds(this._timeLeft);
       },
       start: function() {
+        if (this._timeUp || this._timerInterval) {
+          this.reset();
+        }
         this._startTime = Date.now();
         this._startTimer();
       },
       pause: function () {
         this._lastElapsedTime = this._elapsedTime;
         clearInterval(this._timerInterval);
+        this._timerInterval = null;
       },
       reset: function () {
         clearInterval(this._timerInterval);
+        this._timerInterval = null;
         this._timeUp = false;
         this._timeLeft = this.time * 1000;
         this._elapsedTime = 0;
@@ -141,8 +146,8 @@
             this._timeLeftString = timeFromSeconds(0);
             if (!this._timeUp) {
               this._timeUp = true;
-              this.broadcast('timeup');
               this.$.timerTime.classList.add('timeup');
+              this.broadcast('timeup');
             }
           }
           else {
